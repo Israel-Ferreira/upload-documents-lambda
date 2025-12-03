@@ -27,7 +27,7 @@ data "aws_iam_policy_document" "lambda_role_policy" {
       type        = "Service"
       identifiers = ["lambda.amazonaws.com"]
     }
-    
+
 
     actions = [
       "sts:AssumeRole"
@@ -70,7 +70,7 @@ resource "aws_iam_role_policy" "s3_access_policy_attachment" {
 
 data "archive_file" "lambda_zip" {
   type        = "zip"
-  source_dir = "${path.module}/lambda"
+  source_dir  = "${path.module}/lambda"
   output_path = "${path.module}/lambda_function.zip"
 }
 
@@ -104,7 +104,7 @@ resource "aws_api_gateway_rest_api" "proxy_lambda" {
     "text/plain",
     "application/msword",
     "application/ms-excel",
-   ]
+  ]
 }
 
 
