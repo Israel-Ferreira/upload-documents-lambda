@@ -140,10 +140,14 @@ resource "aws_api_gateway_integration" "proxy_lambda_integration" {
 }
 
 
+
+
 resource "aws_api_gateway_deployment" "deploy" {
   rest_api_id = aws_api_gateway_rest_api.proxy_lambda.id
   depends_on = [ aws_api_gateway_integration.proxy_lambda_integration ]
 }
+
+
 
 
 resource "aws_api_gateway_stage" "stage" {
