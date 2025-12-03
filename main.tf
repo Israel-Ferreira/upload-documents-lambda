@@ -69,7 +69,7 @@ resource "aws_iam_role_policy" "s3_access_policy_attachment" {
 }
 
 
-resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
+resource "aws_iam_role_policy_attachment" "lambda-permissions" {
   # The ARN for the AWSLambdaBasicExecutionRole managed policy
   policy_arn = "arn:aws:iam::aws:policy/AWSLambdaBasicExecutionRole"
   role       = aws_iam_role.lambda_role.arn
