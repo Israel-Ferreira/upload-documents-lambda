@@ -36,22 +36,6 @@ data "aws_iam_policy_document" "lambda_role_policy" {
 }
 
 
-data "aws_iam_policy_document" "s3_access_policy" {
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "s3:PutObject",
-      "s3:PutObjectAcl",
-      "s3:GetObject",
-    ]
-
-    resources = [
-      "arn:aws:s3:::imoveis-financiamentos-docs",
-      "arn:aws:s3:::imoveis-financiamentos-docs/*"
-    ]
-  }
-}
 
 
 resource "aws_iam_role" "lambda_role" {
@@ -62,18 +46,25 @@ resource "aws_iam_role" "lambda_role" {
 
 
 
-resource "aws_iam_role_policy" "s3_access_policy_attachment" {
-  name   = "s3_access_policy"
-  role   = aws_iam_role.lambda_role.id
-  policy = data.aws_iam_policy_document.s3_access_policy.json
+resource "aws_iam_policy" "s3_access_policy" {
+  name = "s3_access_policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = ["s3:PutObject"]
+      Resource = "arn:aws:s3:::imoveis-financiamentos-docs/*"
+    }]
+  })
 }
 
 
-resource "aws_iam_role_policy_attachment" "lambda-permissions" {
-  # The ARN for the AWSLambdaBasicExecutionRole managed policy
-  policy_arn = "arn:aws:iam::aws:policy/AWSLambdaBasicExecutionRole"
-  role       = aws_iam_role.lambda_role.arn
+resource "aws_iam_role_policy_attachment" "lambda_attachment" {
+  role = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.s3_access_policy.arn
 }
+
 
 
 
