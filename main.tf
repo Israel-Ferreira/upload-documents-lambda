@@ -60,11 +60,21 @@ resource "aws_iam_role" "lambda_role" {
 }
 
 
+
+
 resource "aws_iam_role_policy" "s3_access_policy_attachment" {
   name   = "s3_access_policy"
   role   = aws_iam_role.lambda_role.id
   policy = data.aws_iam_policy_document.s3_access_policy.json
 }
+
+
+resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
+  # The ARN for the AWSLambdaBasicExecutionRole managed policy
+  policy_arn = "arn:aws:iam::aws:policy/AWSLambdaBasicExecutionRole"
+  role       = aws_iam_role.lambda_role.arn
+}
+
 
 
 
@@ -100,6 +110,7 @@ resource "aws_api_gateway_rest_api" "proxy_lambda" {
   description = "API Gateway for Upload Document Lambda Function"
 
   binary_media_types = [
+    "multipart/form-data",
     "application/pdf",
     "text/plain",
     "application/msword",
@@ -126,9 +137,22 @@ resource "aws_api_gateway_integration" "proxy_lambda_integration" {
   resource_id = aws_api_gateway_resource.name.id
   http_method = aws_api_gateway_method.proxy_lambda_method.http_method
 
+
   integration_http_method = "POST"
   type                    = "AWS"
   uri                     = aws_lambda_function.upload_document_lambda.invoke_arn
 }
 
+
+resource "aws_api_gateway_deployment" "deploy" {
+  rest_api_id = aws_api_gateway_rest_api.proxy_lambda.id
+  depends_on = [ aws_api_gateway_integration.proxy_lambda_integration ]
+}
+
+
+resource "aws_api_gateway_stage" "stage" {
+  stage_name = "TESTE"
+  deployment_id = aws_api_gateway_deployment.deploy.id
+  rest_api_id = aws_api_gateway_rest_api.proxy_lambda.id
+}
 
