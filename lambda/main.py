@@ -28,7 +28,7 @@ def handler(event, context):
         s3.put_object(
             Bucket=BUCKET_NAME,
             Key=filename,
-            body=decoded_file
+            Body=decoded_file
         )
 
         return {
