@@ -13,11 +13,11 @@ s3 = boto3.client("s3")
 
 def handler(event, context):
 
-    print(event)
+    body = json.loads(event["body"])
 
-    filename = event.get("filename")
+    filename = body["filename"]
 
-    filecontent_b64 = event.get("file_content")
+    filecontent_b64 = body["file_content"]
 
 
     decoded_file = base64.b64decode(filecontent_b64)
