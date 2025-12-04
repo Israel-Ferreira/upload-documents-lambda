@@ -106,6 +106,7 @@ resource "aws_api_gateway_rest_api" "proxy_lambda" {
   description = "API Gateway for Upload Document Lambda Function"
 
   binary_media_types = [
+    "application/octet-stream",
     "multipart/form-data",
     "application/pdf",
     "text/plain",
