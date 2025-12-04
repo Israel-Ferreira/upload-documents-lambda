@@ -97,6 +97,7 @@ resource "aws_lambda_function" "upload_document_lambda" {
 
   role    = aws_iam_role.lambda_role.arn
   runtime = "python3.11"
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 }
 
 

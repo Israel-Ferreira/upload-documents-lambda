@@ -13,6 +13,8 @@ s3 = boto3.client("s3")
 
 def handler(event, context):
 
+    print(event)
+
     filename = event.get("filename")
 
     filecontent_b64 = event.get("file_content")
